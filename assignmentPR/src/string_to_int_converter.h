@@ -13,7 +13,14 @@
  *        construct the number as a float
  *
  * @note Design around edge cases like "10", "0.01", ".01"
+ * @note on coding convention:
+ *    When defining pointers, please use the following
+ *    format in regards to the asterisk placement:
+ *       char* functionName(char* charVar, int* intVar);
+ *
  */
+
+ 
 #ifndef STRING_TO_INT_CONVERTER_H
 #define STRING_TO_INT_CONVERTER_H
 
@@ -24,7 +31,7 @@ typedef enum {
 } bool;
 
 // Function Prototypes
-bool characteristic(char numString[], int *c);
-bool mantissa(char numString[], int *numerator, int *denominator);
+bool characteristic(char numString[], int* c);
+bool mantissa(char numString[], int* numerator, int* denominator);
 
 #endif  // STRING_TO_INT_CONVERTER_H

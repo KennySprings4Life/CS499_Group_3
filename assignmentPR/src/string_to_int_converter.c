@@ -13,13 +13,20 @@
  *        construct the number as a float
  *
  * @note Design around edge cases like "10", "0.01", ".01"
+ * @note on coding convention:
+ *    When defining pointers, please use the following
+ *    format in regards to the asterisk placement:
+ *       char* functionName(char* charVar, int* intVar);
+ *
  */
+ 
 
 #ifndef STRING_TO_INT_CONVERTER_C
 #define STRING_TO_INT_CONVERTER_C
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "parser.h"
 #include "string_to_int_converter.h"
 
 /*
@@ -33,16 +40,24 @@
  *
  * @return Bool indicating success or failure
  */
-bool characteristic(char numString[], int *c){
-    // TODO: Check numstring for proper formatting
+bool characteristic(char numString[], int* c){
+    int length = strLength(numString);
+    //char *characteristicRAW = malloc(sizeof(char) * length);
+    char resultString[length];
 
-    // TODO: Obtain string of the characteristic
+    if(isValid(numString) == false){
+        return false;
+    }
 
-    // TODO: Convert string to int
+    removeLeadingSpaces(numString);
+    removeLeadingZeros(numString);
+    
+    addLeadingZero(numString, "0");
 
-    // TODO: Store in c pointer and return True
-
-    return false;
+    getCharacteristic(numString, resultString);
+    *c = atoi(resultString);
+    
+    return true;
 }
 
 /*
@@ -59,23 +74,45 @@ bool characteristic(char numString[], int *c){
  *
  * @return Bool indicating success or failure
  */
-bool mantissa(char numString[], int *numerator, int *denominator){
-    // TODO: Check numstring for proper formatting
+bool mantissa(char numString[], int* numerator, int* denominator){
+    if( isValid(numString) == false){
+        return false;
+    }
 
-    // TODO: Obtain string of the mantissa
+    removeTrailingSpaces(numString);
+    removeTrailingZeros(numString);
+    
+    // Variable declarations
+    int length = strLength(numString);
+    char newString[length];
 
-    // TODO: Convert string to int
+    int mantissalength = getMantissaLength(numString);
+    // Get the digits to the right of the decimal point
+    //char mantissaRAW[length];
+    char* mantissaRAW = malloc(sizeof(char) * mantissalength);
+    mantissaRAW = getMantissa(numString, newString);
 
-    // TODO: Construct denominator to be an int that is a power of
-    //       10 that creates a proper float representing the
-    //       mantissa and the numerator and denomiator are divided
+    // Determine how many figures are to the right of the decimal point
+    // Remove leading zeros from the 'mantissa'
+    int sanitizedMantissa = atoi(mantissaRAW);
 
-    // TODO: Store numerator and denominator and return True
+    // Minimum denominator is 10
+    int realDenom = 10;
 
-    return false;
+    // Calculate the denominator by repeatedly multiplying by 10
+    while(mantissalength >= 1){
+        mantissalength--;
+        realDenom *= 10;
+    }
+
+    // Set the return values
+    *numerator = sanitizedMantissa;
+    *denominator = realDenom;
+    
+    return true;
 }
 
-// Maybe a general function combining characteristic() and 
+// Maybe a general function combining characteristic() and
 // mantissa(), implementing both to convert a string into int
 
 #endif  // STRING_TO_INT_CONVERTER.C
